@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { DAYS, parseHours, type Hours } from "@/lib/hours";
 
 type MessageType = "info" | "success" | "error";
 
@@ -81,6 +82,7 @@ export default function BusinessProfilePage() {
   const [city, setCity] = useState("");
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
+  const [hours, setHours] = useState<Hours>({});
   const [businessId, setBusinessId] = useState("");
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
@@ -133,7 +135,7 @@ export default function BusinessProfilePage() {
         const { data: profile, error: profileError } = await supabase
           .from("business_profiles")
           .select(
-            "name, category, description, address_public, website_url, phone_public, slug, is_published"
+            "name, category, description, address_public, website_url, phone_public, opening_hours, slug, is_published"
           )
           .eq("business_id", id)
           .maybeSingle();
@@ -148,6 +150,7 @@ export default function BusinessProfilePage() {
           setCity(profile.address_public ?? "");
           setWebsite(profile.website_url ?? "");
           setPhone(profile.phone_public ?? "");
+          setHours(parseHours(profile.opening_hours));
           setSlug(profile.slug ?? "");
           setIsPublished(Boolean(profile.is_published));
         }
@@ -186,6 +189,14 @@ export default function BusinessProfilePage() {
       }
 
       const normalizedWebsite = normalizeWebsite(website);
+
+      const cleanHours = parseHours(hours);
+      const openingHours = Object.keys(cleanHours).length ? cleanHours : null;
+
+      const trimmedPhone = phone.trim();
+      if (trimmedPhone && !/^[+()\d][\d\s()/.+-]{4,38}$/.test(trimmedPhone)) {
+        throw new Error("Bitte gib eine gültige Telefonnummer ein, z. B. +49 421 123456.");
+      }
 
       const baseSlug = createSlugBase(trimmedName);
       if (!baseSlug && !slug) {
@@ -232,7 +243,8 @@ export default function BusinessProfilePage() {
             description: description.trim() || null,
             address_public: city.trim() || null,
             website_url: normalizedWebsite || null,
-            phone_public: phone.trim() || null,
+            phone_public: trimmedPhone || null,
+            opening_hours: openingHours,
             is_published: isPublished,
             updated_at: new Date().toISOString(),
           },
@@ -250,6 +262,7 @@ export default function BusinessProfilePage() {
 
       setSlug(publicSlug);
       setWebsite(normalizedWebsite);
+      setHours(cleanHours);
       showMessage(
         isPublished
           ? "Profil gespeichert und veröffentlicht."
@@ -404,6 +417,31 @@ export default function BusinessProfilePage() {
                   placeholder="+49 421 123456"
                 />
               </div>
+
+              <fieldset>
+                <legend className="mb-2 block font-semibold">Öffnungszeiten</legend>
+                <p className="mb-3 text-sm text-gray-600">
+                  Freitext, z. B. „09:00–18:00“ oder „geschlossen“. Leer lassen, wenn der Tag nicht angezeigt werden soll.
+                </p>
+                <div className="space-y-2">
+                  {DAYS.map(([key, label]) => (
+                    <div key={key} className="flex items-center gap-3">
+                      <label htmlFor={`hours-${key}`} className="w-28 shrink-0 text-sm font-medium">
+                        {label}
+                      </label>
+                      <input
+                        id={`hours-${key}`}
+                        type="text"
+                        maxLength={40}
+                        value={hours[key] ?? ""}
+                        onChange={(e) => setHours((h) => ({ ...h, [key]: e.target.value }))}
+                        className="w-full rounded-xl border border-gray-300 px-4 py-2"
+                        placeholder="09:00–18:00"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
 
               <div className="rounded-xl border border-orange-100 bg-orange-50 p-4">
                 <label className="flex cursor-pointer items-center gap-3">

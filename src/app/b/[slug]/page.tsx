@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { DAYS, parseHours } from "@/lib/hours";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -42,7 +43,7 @@ async function BusinessProfile({ params }: Props) {
 
   const { data: profile, error } = await supabase
     .from("business_profiles")
-    .select("name, category, description, address_public, website_url, phone_public, slug")
+    .select("name, category, description, address_public, website_url, phone_public, opening_hours, slug")
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -50,6 +51,9 @@ async function BusinessProfile({ params }: Props) {
   if (error || !profile) {
     notFound();
   }
+
+  const hours = parseHours(profile.opening_hours);
+  const hasHours = Object.keys(hours).length > 0;
 
   return (
     <section className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm">
@@ -102,6 +106,20 @@ async function BusinessProfile({ params }: Props) {
               </li>
             )}
           </ul>
+        )}
+
+        {hasHours && (
+          <>
+            <h2 className="mt-8 text-xl font-bold">Öffnungszeiten</h2>
+            <dl className="mt-3 grid grid-cols-[7rem_1fr] gap-y-1 text-gray-700">
+              {DAYS.filter(([key]) => hours[key]).map(([key, label]) => (
+                <div key={key} className="contents">
+                  <dt className="font-medium">{label}</dt>
+                  <dd>{hours[key]}</dd>
+                </div>
+              ))}
+            </dl>
+          </>
         )}
 
         <div className="mt-8 rounded-2xl bg-[#FFF8EF] p-5">

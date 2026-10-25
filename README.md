@@ -10,4 +10,4 @@ Digitale Kundenbindung für lokale Unternehmen (Next.js, Supabase).
 SQL-Migrationen liegen in `supabase/migrations/` und werden im Supabase SQL Editor ausgeführt.
 
 ## Status
-Konto, Anmeldung, Dashboard-Navigation, Profil-Editor, öffentliche Profilseite sowie QR-Code mit NFC-Anleitung sind umgesetzt. Treueprogramm, Feedback und Statistiken folgen.
+Konto, Anmeldung, Dashboard-Navigation, Profil-Editor (inkl. Öffnungszeiten), öffentliche Profilseite sowie QR-Code mit NFC-Anleitung sind umgesetzt. Treueprogramm, Feedback und Statistiken folgen.
