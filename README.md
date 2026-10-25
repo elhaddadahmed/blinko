@@ -10,7 +10,7 @@ Digitale Kundenbindung für lokale Unternehmen (Next.js, Supabase).
 SQL-Migrationen liegen in `supabase/migrations/` und werden im Supabase SQL Editor ausgeführt.
 
 ## Status
-Konto, Anmeldung, Dashboard-Navigation, Profil-Editor (inkl. Öffnungszeiten), öffentliche Profilseite sowie QR-Code mit NFC-Anleitung sind umgesetzt. Treueprogramm, Feedback und Statistiken folgen.
+Konto, Anmeldung, Dashboard-Navigation, Profil-Editor (inkl. Öffnungszeiten), Treueprogramm-Einrichtung, öffentliche Profilseite sowie QR-Code mit NFC-Anleitung sind umgesetzt. Treueprogramm, Feedback und Statistiken folgen.
 
 ## Treueprogramm (Datenbank)
 `supabase/migrations/0002_loyalty.sql` legt Programme, Karten, Stempel, Einlösungen und Scan-Tokens samt Sicherheitsregeln an.

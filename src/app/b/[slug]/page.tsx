@@ -43,7 +43,7 @@ async function BusinessProfile({ params }: Props) {
 
   const { data: profile, error } = await supabase
     .from("business_profiles")
-    .select("name, category, description, address_public, website_url, phone_public, opening_hours, slug")
+    .select("business_id, name, category, description, address_public, website_url, phone_public, opening_hours, slug")
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -51,6 +51,13 @@ async function BusinessProfile({ params }: Props) {
   if (error || !profile) {
     notFound();
   }
+
+  const { data: program } = await supabase
+    .from("loyalty_programs")
+    .select("name, description, stamps_required, reward, terms")
+    .eq("business_id", profile.business_id)
+    .eq("is_active", true)
+    .maybeSingle();
 
   const hours = parseHours(profile.opening_hours);
   const hasHours = Object.keys(hours).length > 0;
@@ -122,12 +129,22 @@ async function BusinessProfile({ params }: Props) {
           </>
         )}
 
-        <div className="mt-8 rounded-2xl bg-[#FFF8EF] p-5">
-          <h2 className="font-bold">Digitales Treueprogramm</h2>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
-            Dieses Unternehmen bietet aktuell noch kein digitales Treueprogramm an.
-          </p>
-        </div>
+        {program && (
+          <div className="mt-8 rounded-2xl bg-[#FFF8EF] p-5">
+            <h2 className="font-bold">{program.name}</h2>
+            {program.description && (
+              <p className="mt-2 text-sm leading-6 text-gray-600">{program.description}</p>
+            )}
+            <p className="mt-3 font-semibold">
+              Sammle {program.stamps_required} Stempel und erhalte: {program.reward}
+            </p>
+            {program.terms && (
+              <p className="mt-3 whitespace-pre-wrap text-xs leading-5 text-gray-500">
+                {program.terms}
+              </p>
+            )}
+          </div>
+        )}
 
         <p className="mt-8 text-center text-xs text-gray-400">
           Digitales Geschäftsprofil mit Blinko

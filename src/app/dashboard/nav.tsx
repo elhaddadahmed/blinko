@@ -6,10 +6,11 @@ import { supabase } from "@/lib/supabase";
 
 const ITEMS = [
   { href: "/dashboard/profil", label: "Geschäftsprofil" },
+  { href: "/dashboard/treueprogramm", label: "Treueprogramm" },
   { href: "/dashboard/qr", label: "QR-Code & NFC" },
 ] as const;
 
-const COMING_SOON = ["Treueprogramm", "Statistiken"] as const;
+const COMING_SOON = ["Statistiken"] as const;
 
 export default function DashboardNav() {
   const pathname = usePathname();
