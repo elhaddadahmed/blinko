@@ -1,17 +1,48 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export default async function PublicBusinessPage({ params }: Props) {
+function PageShell({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="min-h-screen bg-[#FFF8EF] px-5 py-12 text-[#202A35]">
+      <div className="mx-auto max-w-2xl">
+        <Link href="/" className="text-2xl font-extrabold">
+          <span className="text-[#F36B21]">B</span> Blinko
+        </Link>
+        {children}
+      </div>
+    </main>
+  );
+}
+
+function ProfileSkeleton() {
+  return (
+    <section
+      aria-busy="true"
+      aria-label="Profil wird geladen"
+      className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm"
+    >
+      <div className="h-40 animate-pulse bg-orange-200" />
+      <div className="space-y-3 p-8">
+        <div className="h-5 w-1/3 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
+        <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
+      </div>
+    </section>
+  );
+}
+
+async function BusinessProfile({ params }: Props) {
   const { slug } = await params;
 
   const { data: profile, error } = await supabase
     .from("business_profiles")
-    .select("name, category, description, address_public, slug")
+    .select("name, category, description, address_public, website_url, phone_public, slug")
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -21,50 +52,79 @@ export default async function PublicBusinessPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[#FFF8EF] px-5 py-12 text-[#202A35]">
-      <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-2xl font-extrabold">
-          <span className="text-[#F36B21]">B</span> Blinko
-        </Link>
+    <section className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm">
+      <div className="bg-[#F36B21] px-8 py-10 text-white">
+        <p className="text-sm font-semibold uppercase tracking-wider">
+          {profile.category}
+        </p>
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm">
-          <div className="bg-[#F36B21] px-8 py-10 text-white">
-            <p className="text-sm font-semibold uppercase tracking-wider">
-              {profile.category}
-            </p>
+        <h1 className="mt-3 text-3xl font-extrabold sm:text-4xl">
+          {profile.name}
+        </h1>
 
-            <h1 className="mt-3 text-3xl font-extrabold sm:text-4xl">
-              {profile.name}
-            </h1>
-
-            {profile.address_public && (
-              <p className="mt-3 text-white/90">
-                {profile.address_public}
-              </p>
-            )}
-          </div>
-
-          <div className="p-8">
-            <h2 className="text-xl font-bold">Über uns</h2>
-
-            <p className="mt-3 whitespace-pre-wrap leading-7 text-gray-600">
-              {profile.description || "Weitere Informationen folgen bald."}
-            </p>
-
-            <div className="mt-8 rounded-2xl bg-[#FFF8EF] p-5">
-              <h2 className="font-bold">Digitales Treueprogramm</h2>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                Hier wird später das digitale Treueprogramm dieses
-                Unternehmens angezeigt.
-              </p>
-            </div>
-
-            <p className="mt-8 text-center text-xs text-gray-400">
-              Digitales Geschäftsprofil mit Blinko
-            </p>
-          </div>
-        </section>
+        {profile.address_public && (
+          <p className="mt-3 text-white/90">{profile.address_public}</p>
+        )}
       </div>
-    </main>
+
+      <div className="p-8">
+        {profile.description && (
+          <>
+            <h2 className="text-xl font-bold">Über uns</h2>
+            <p className="mt-3 whitespace-pre-wrap leading-7 text-gray-600">
+              {profile.description}
+            </p>
+          </>
+        )}
+
+        {(profile.phone_public || profile.website_url) && (
+          <ul className="mt-6 space-y-2 font-semibold">
+            {profile.phone_public && (
+              <li>
+                <a
+                  href={`tel:${profile.phone_public.replace(/[^\d+]/g, "")}`}
+                  className="text-[#F36B21] underline-offset-4 hover:underline"
+                >
+                  {profile.phone_public}
+                </a>
+              </li>
+            )}
+            {profile.website_url && /^https?:\/\//i.test(profile.website_url) && (
+              <li>
+                <a
+                  href={profile.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-all text-[#F36B21] underline-offset-4 hover:underline"
+                >
+                  {profile.website_url.replace(/^https?:\/\//i, "")}
+                </a>
+              </li>
+            )}
+          </ul>
+        )}
+
+        <div className="mt-8 rounded-2xl bg-[#FFF8EF] p-5">
+          <h2 className="font-bold">Digitales Treueprogramm</h2>
+          <p className="mt-2 text-sm leading-6 text-gray-600">
+            Dieses Unternehmen bietet aktuell noch kein digitales Treueprogramm an.
+          </p>
+        </div>
+
+        <p className="mt-8 text-center text-xs text-gray-400">
+          Digitales Geschäftsprofil mit Blinko
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export default function PublicBusinessPage({ params }: Props) {
+  return (
+    <PageShell>
+      <Suspense fallback={<ProfileSkeleton />}>
+        <BusinessProfile params={params} />
+      </Suspense>
+    </PageShell>
   );
 }

@@ -299,7 +299,7 @@ export default function BusinessProfilePage() {
                 {message}
               </p>
               <Link
-                href="/login"
+                href="/anmelden"
                 className="inline-block rounded-full bg-[#F36B21] px-5 py-3 font-bold text-white"
               >
                 Zur Anmeldung
