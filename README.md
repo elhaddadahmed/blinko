@@ -11,3 +11,7 @@ SQL-Migrationen liegen in `supabase/migrations/` und werden im Supabase SQL Edit
 
 ## Status
 Konto, Anmeldung, Dashboard-Navigation, Profil-Editor (inkl. Öffnungszeiten), öffentliche Profilseite sowie QR-Code mit NFC-Anleitung sind umgesetzt. Treueprogramm, Feedback und Statistiken folgen.
+
+## Treueprogramm (Datenbank)
+`supabase/migrations/0002_loyalty.sql` legt Programme, Karten, Stempel, Einlösungen und Scan-Tokens samt Sicherheitsregeln an.
+Tests: `supabase/tests/loyalty_security_test.sql` (nur gegen eine lokale Test-Datenbank ausführen).
