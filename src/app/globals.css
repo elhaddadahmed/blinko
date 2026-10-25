@@ -1,0 +1,42 @@
+
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --blinko-orange: #f36b21;
+  --blinko-cream: #fff8ef;
+  --blinko-ink: #202a35;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--blinko-cream);
+  color: var(--blinko-ink);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: #ffe3c5;
+  color: #633019;
+}
