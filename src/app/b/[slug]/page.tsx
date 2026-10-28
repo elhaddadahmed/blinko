@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { DAYS, parseHours } from "@/lib/hours";
+import StartCard from "./start-card";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -138,8 +139,9 @@ async function BusinessProfile({ params }: Props) {
             <p className="mt-3 font-semibold">
               Sammle {program.stamps_required} Stempel und erhalte: {program.reward}
             </p>
+            <StartCard slug={profile.slug} />
             {program.terms && (
-              <p className="mt-3 whitespace-pre-wrap text-xs leading-5 text-gray-500">
+              <p className="mt-4 whitespace-pre-wrap text-xs leading-5 text-gray-500">
                 {program.terms}
               </p>
             )}

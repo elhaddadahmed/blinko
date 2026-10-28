@@ -7,10 +7,10 @@ import { supabase } from "@/lib/supabase";
 const ITEMS = [
   { href: "/dashboard/profil", label: "Geschäftsprofil" },
   { href: "/dashboard/treueprogramm", label: "Treueprogramm" },
+  { href: "/dashboard/stempeln", label: "Stempeln" },
+  { href: "/dashboard/statistiken", label: "Statistiken" },
   { href: "/dashboard/qr", label: "QR-Code & NFC" },
 ] as const;
-
-const COMING_SOON = ["Statistiken"] as const;
 
 export default function DashboardNav() {
   const pathname = usePathname();
@@ -45,12 +45,6 @@ export default function DashboardNav() {
           >
             {item.label}
           </Link>
-        ))}
-
-        {COMING_SOON.map((label) => (
-          <span key={label} className="text-gray-400" title="Noch nicht verfügbar">
-            {label} <span className="text-xs">(bald)</span>
-          </span>
         ))}
 
         <button
