@@ -42,7 +42,8 @@ export default function QrPage() {
         if (profileError) throw profileError;
         if (!profile?.slug) return !cancelled && setState({ status: "no-profile" });
 
-        const link = `${window.location.origin}/b/${profile.slug}`;
+        const base = (process.env.NEXT_PUBLIC_SITE_URL || window.location.origin).replace(/\/+$/, "");
+        const link = `${base}/b/${profile.slug}`;
         const image = await QRCode.toDataURL(link, {
           width: 640,
           margin: 2,
@@ -133,6 +134,14 @@ export default function QrPage() {
                 </p>
               )}
 
+              {/localhost|127\.0\.0\.1|192\.168\./.test(url) && (
+                <p role="status" className="mt-6 rounded-xl bg-orange-50 p-4 text-sm">
+                  Dieser Link funktioniert nur auf diesem Computer. Veröffentliche die App
+                  (z. B. auf Vercel) und trage die Adresse als NEXT_PUBLIC_SITE_URL ein, bevor
+                  du den Code druckst oder auf einen NFC-Tag schreibst.
+                </p>
+              )}
+
               <div className="mt-8 flex flex-col items-center gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -186,7 +195,7 @@ export default function QrPage() {
                 </ol>
                 <p className="mt-4 rounded-xl bg-[#FFF8EF] p-4 text-sm leading-6 text-gray-600">
                   Dieser Link öffnet nur dein öffentliches Profil. Er vergibt keine
-                  Stempel oder Belohnungen. Dafür kommt später ein eigener, gesicherter Ablauf.
+                  Stempel oder Belohnungen. Gestempelt wird nur über den Bereich „Stempeln“ im Dashboard.
                 </p>
               </div>
             </>
