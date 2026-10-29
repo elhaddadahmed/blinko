@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const features = [
   {
@@ -10,10 +11,11 @@ const features = [
     icon: "♡",
     title: "Digitale Treuekarten",
     description:
-      "Belohne Stammkunden mit digitalen Stempeln, Punkten und attraktiven Prämien.",
+      "Belohne Stammkunden mit digitalen Stempeln und einer Prämie, ganz ohne App.",
   },
   {
     icon: "✦",
+    planned: true,
     title: "Kundenfeedback",
     description:
       "Verstehe deine Kunden besser und leite sie zu deinen öffentlichen Bewertungsseiten.",
@@ -22,10 +24,11 @@ const features = [
     icon: "▥",
     title: "Statistiken",
     description:
-      "Behalte Scans, Besuche und die Entwicklung deines Treueprogramms im Blick.",
+      "Behalte gestartete Karten, vergebene Stempel und eingelöste Belohnungen im Blick.",
   },
   {
     icon: "↗",
+    planned: true,
     title: "Marketing",
     description:
       "Präsentiere Angebote und Gutscheine, die Kunden zu einem weiteren Besuch motivieren.",
@@ -61,12 +64,17 @@ export default function Home() {
           </a>
         </nav>
 
-        <a
-          href="#starten"
-          className="rounded-full bg-[#f36b21] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#d95612]"
-        >
-          Jetzt starten ↗
-        </a>
+        <div className="flex items-center gap-3">
+          <Link href="/anmelden" className="text-sm font-bold hover:text-[#f36b21]">
+            Anmelden
+          </Link>
+          <Link
+            href="/registrieren"
+            className="rounded-full bg-[#f36b21] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#d95612]"
+          >
+            Konto erstellen ↗
+          </Link>
+        </div>
       </header>
 
       <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 py-16 md:grid-cols-2 md:py-24 lg:px-10">
@@ -82,18 +90,18 @@ export default function Home() {
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-8 text-[#59616a]">
-            Gewinne Stammkunden für dein Geschäft. Verbinde NFC, QR-Codes,
-            digitale Treuekarten und Kundenfeedback auf einer einfachen
-            Plattform – ganz ohne App für deine Kunden.
+            Gewinne Stammkunden für dein Geschäft. Verbinde NFC, QR-Codes
+            und digitale Treuekarten auf einer einfachen Plattform – ganz
+            ohne App für deine Kunden.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="#starten"
+            <Link
+              href="/registrieren"
               className="rounded-full bg-[#f36b21] px-6 py-4 font-bold text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:bg-[#d95612]"
             >
-              Kostenlos starten ↗
-            </a>
+              Konto erstellen ↗
+            </Link>
             <a
               href="#funktionen"
               className="rounded-full border border-[#e5d8c9] px-6 py-4 font-bold transition hover:bg-white"
@@ -119,7 +127,7 @@ export default function Home() {
                 <h2 className="mt-1 text-xl font-extrabold">Dein Geschäft</h2>
               </div>
               <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-[#b44e19]">
-                ● Live-Vorschau
+                Beispielansicht
               </span>
             </div>
 
@@ -136,24 +144,21 @@ export default function Home() {
       Dein Geschäft · Deine digitale Seite
     </p>
   </div>
-  <div className="ml-auto text-sm font-bold text-[#bd6a20]">
-    ★ 4,9
-  </div>
 </div>
 
 <div className="mt-6 grid grid-cols-2 gap-3">
   <div className="rounded-2xl bg-[#fff8ef] p-4">
-    <span className="text-xl">🏷️</span>
-    <p className="mt-2 font-bold">Angebote</p>
+    <span className="text-xl">🕒</span>
+    <p className="mt-2 font-bold">Öffnungszeiten</p>
     <p className="mt-1 text-xs text-[#77736d]">
-      Entdecke unsere Aktionen
+      Immer aktuell auf deiner Seite
     </p>
   </div>
   <div className="rounded-2xl bg-[#fff8ef] p-4">
-    <span className="text-xl">✨</span>
-    <p className="mt-2 font-bold">Neuigkeiten</p>
+    <span className="text-xl">☕</span>
+    <p className="mt-2 font-bold">Treuekarte</p>
     <p className="mt-1 text-xs text-[#77736d]">
-      Aktuelles aus deinem Geschäft
+      Stempel sammeln ohne App
     </p>
   </div>
 </div>
@@ -163,7 +168,7 @@ export default function Home() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-bold tracking-widest text-orange-100">
-                      DEINE TREUEKARTE
+                      BEISPIEL-TREUEKARTE
                     </p>
                     <p className="mt-2 font-extrabold">5 von 7 Besuchen</p>
                   </div>
@@ -237,7 +242,14 @@ export default function Home() {
               <div className="grid size-12 place-items-center rounded-2xl bg-[#fff0e1] text-2xl font-bold text-[#f36b21]">
                 {feature.icon}
               </div>
-              <h3 className="mt-5 text-xl font-extrabold">{feature.title}</h3>
+              <h3 className="mt-5 text-xl font-extrabold">
+                {feature.title}
+                {"planned" in feature && feature.planned && (
+                  <span className="ml-2 rounded-full bg-[#f0e4d7] px-2.5 py-1 align-middle text-xs font-bold text-[#8b421b]">
+                    Geplant
+                  </span>
+                )}
+              </h3>
               <p className="mt-3 leading-7 text-[#687078]">
                 {feature.description}
               </p>
@@ -258,11 +270,11 @@ export default function Home() {
               Direkt auf dem Smartphone.
             </h2>
             <p className="mt-5 max-w-xl leading-7 text-[#d5dbe1]">
-              Unsere geplante Wallet-Integration soll digitale Kundenkarten
-              auch in Apple Wallet und Google Wallet verfügbar machen.
+              Deine Treuekarte läuft direkt im Browser, ganz ohne App. Die
+              Integration in Apple Wallet und Google Wallet ist geplant.
             </p>
             <p className="mt-4 text-sm text-[#ffcfac]">
-              Hinweis: Die echten Wallet-Pässe werden später angebunden.
+              Apple Wallet und Google Wallet sind noch nicht verfügbar.
             </p>
           </div>
 
@@ -272,7 +284,7 @@ export default function Home() {
               <span className="text-2xl">☕</span>
             </div>
             <p className="mt-7 text-xs font-bold tracking-widest text-[#9b6849]">
-              TREUEKARTE
+              BEISPIEL-TREUEKARTE
             </p>
             <p className="mt-2 text-3xl font-black">5 / 7 Stempel</p>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#ffe3c5]">
@@ -282,11 +294,11 @@ export default function Home() {
               Noch zwei Besuche bis zur Belohnung.
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-[#f0e4d7] p-3 text-center text-sm font-bold">
-                🍎 Apple Wallet
+              <div aria-disabled="true" className="rounded-xl border border-[#f0e4d7] p-3 text-center text-sm font-bold opacity-60">
+                🍎 Apple Wallet · geplant
               </div>
-              <div className="rounded-xl border border-[#f0e4d7] p-3 text-center text-sm font-bold">
-                📲 Google Wallet
+              <div aria-disabled="true" className="rounded-xl border border-[#f0e4d7] p-3 text-center text-sm font-bold opacity-60">
+                📲 Google Wallet · geplant
               </div>
             </div>
           </div>
@@ -300,14 +312,17 @@ export default function Home() {
         <p className="mx-auto mt-5 max-w-2xl leading-7 text-orange-50">
           Blinko verbindet dein Geschäft mit den Menschen, die immer wiederkommen.
         </p>
-        <a
-          href="mailto:hallo@blinko.de"
+        <Link
+          href="/registrieren"
           className="mt-8 inline-flex rounded-full bg-white px-7 py-4 font-extrabold text-[#bd4d15] transition hover:bg-[#fff0e1]"
         >
-          Interesse zeigen ↗
-        </a>
-        <p className="mt-4 text-xs text-orange-100">
-          Demo-Startseite · Registrierung und Kontaktformular folgen.
+          Konto erstellen ↗
+        </Link>
+        <p className="mt-4 text-sm text-orange-50">
+          Schon dabei?{" "}
+          <Link href="/anmelden" className="font-bold underline">
+            Anmelden
+          </Link>
         </p>
       </section>
 
