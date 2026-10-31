@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -16,7 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Blinko – Digitale Kundenbindung für lokale Unternehmen",
   description:
-    "Mit Blinko verbinden lokale Unternehmen NFC, QR-Codes, digitale Treuekarten und Kundenfeedback auf einer Plattform.",
+    "Mit Blinko verbinden lokale Unternehmen NFC, QR-Codes und digitale Treuekarten auf einer Plattform.",
+  applicationName: "Blinko",
+  // Kurzer Name, wenn die Seite zum Home-Bildschirm hinzugefügt wird
+  appleWebApp: { title: "Blinko" },
 };
 
 

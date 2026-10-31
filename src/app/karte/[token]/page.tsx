@@ -3,6 +3,7 @@ import CardView from "./card-view";
 
 export const metadata = {
   title: "Meine Treuekarte",
+  appleWebApp: { title: "Treuekarte" },
   robots: { index: false, follow: false },
   referrer: "no-referrer" as const,
 };
