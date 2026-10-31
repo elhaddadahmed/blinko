@@ -11,6 +11,7 @@ const ITEMS = [
   { href: "/dashboard/stempeln", label: "Stempeln" },
   { href: "/dashboard/statistiken", label: "Statistiken" },
   { href: "/dashboard/qr", label: "QR-Code & NFC" },
+  { href: "/dashboard/konto", label: "Konto" },
 ] as const;
 
 export default function DashboardNav() {

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import CardView from "./card-view";
+import SiteFooter from "@/components/site-footer";
 
 export const metadata = {
   title: "Meine Treuekarte",
@@ -20,6 +21,7 @@ export default function CardPage({ params }: { params: Promise<{ token: string }
         <Suspense fallback={<p aria-busy="true">Karte wird geladen …</p>}>
           <Inner params={params} />
         </Suspense>
+        <SiteFooter />
       </div>
     </main>
   );

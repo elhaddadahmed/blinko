@@ -15,3 +15,8 @@ Konto, Anmeldung, Dashboard-Navigation, Profil-Editor (inkl. Öffnungszeiten), T
 ## Treueprogramm (Datenbank)
 `supabase/migrations/0002_loyalty.sql` legt Programme, Karten, Stempel, Einlösungen und Scan-Tokens samt Sicherheitsregeln an.
 Tests: `supabase/tests/loyalty_security_test.sql` (nur gegen eine lokale Test-Datenbank ausführen).
+
+## Rechtliches
+Trage deine Anbieterdaten in `src/lib/legal.ts` ein. Die Seiten `/impressum`, `/datenschutz`, `/agb` und `/avv` sind Entwürfe
+und zeigen einen Hinweis, bis `reviewed` auf `true` steht (nach rechtlicher Prüfung).
+Konto löschen und Datenexport: Dashboard → Konto (Migration `supabase/migrations/0003_delete_account.sql`).

@@ -326,7 +326,12 @@ export default function Home() {
 
       <footer className="flex flex-col gap-3 px-6 py-7 text-sm text-[#77736d] sm:flex-row sm:justify-between">
         <span>© 2026 Blinko · Konzept und Entwicklung</span>
-        <span>NFC · QR · Treuekarten · Kundenbindung</span>
+        <nav aria-label="Rechtliches" className="flex flex-wrap gap-x-5 gap-y-1">
+          <Link href="/impressum" className="hover:text-[#f36b21]">Impressum</Link>
+          <Link href="/datenschutz" className="hover:text-[#f36b21]">Datenschutz</Link>
+          <Link href="/agb" className="hover:text-[#f36b21]">AGB</Link>
+          <Link href="/avv" className="hover:text-[#f36b21]">AVV</Link>
+        </nav>
       </footer>
     </main>
   );

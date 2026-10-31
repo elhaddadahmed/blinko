@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { DAYS, parseHours } from "@/lib/hours";
 import StartCard from "./start-card";
 import Logo from "@/components/logo";
+import SiteFooter from "@/components/site-footer";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -18,6 +19,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
           <Logo size={36} />
         </Link>
         {children}
+        <SiteFooter />
       </div>
     </main>
   );

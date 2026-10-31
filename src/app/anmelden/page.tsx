@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Logo from "@/components/logo";
+import SiteFooter from "@/components/site-footer";
 
 export default function AnmeldenPage() {
   const router = useRouter();
@@ -110,6 +111,7 @@ export default function AnmeldenPage() {
             </Link>
           </p>
         </section>
+        <SiteFooter />
       </div>
     </main>
   );

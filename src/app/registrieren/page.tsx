@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Logo from "@/components/logo";
+import SiteFooter from "@/components/site-footer";
+import { LEGAL } from "@/lib/legal";
 
 function friendlyError(err: unknown): string {
   const e = (typeof err === "object" && err !== null ? err : {}) as { code?: string; message?: string };
@@ -31,6 +33,7 @@ export default function RegistrierenPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [sentTo, setSentTo] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [resending, setResending] = useState(false);
@@ -47,6 +50,11 @@ export default function RegistrierenPage() {
     setError("");
     setInfo("");
 
+    if (!accepted) {
+      setError("Bitte akzeptiere die AGB, die Datenschutzerklärung und den Auftragsverarbeitungsvertrag.");
+      return;
+    }
+
     if (password.length < 8) {
       setError("Das Passwort muss mindestens 8 Zeichen lang sein.");
       return;
@@ -57,6 +65,9 @@ export default function RegistrierenPage() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
+        options: {
+          data: { accepted_terms_at: new Date().toISOString(), terms_version: LEGAL.termsVersion },
+        },
       });
       if (signUpError) throw signUpError;
 
@@ -144,6 +155,25 @@ export default function RegistrierenPage() {
               />
             </div>
 
+            <div className="flex items-start gap-3">
+              <input
+                id="accept"
+                type="checkbox"
+                required
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-1 h-5 w-5 shrink-0 accent-orange-500"
+              />
+              <label htmlFor="accept" className="text-sm leading-6">
+                Ich habe die{" "}
+                <Link href="/agb" target="_blank" className="font-semibold text-[#F36B21] underline">AGB</Link>, die{" "}
+                <Link href="/datenschutz" target="_blank" className="font-semibold text-[#F36B21] underline">Datenschutzerklärung</Link>{" "}
+                und den{" "}
+                <Link href="/avv" target="_blank" className="font-semibold text-[#F36B21] underline">Auftragsverarbeitungsvertrag (AVV)</Link>{" "}
+                gelesen und akzeptiere sie.
+              </label>
+            </div>
+
             {error && (
               <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-800">
                 {error}
@@ -192,6 +222,7 @@ export default function RegistrierenPage() {
             </Link>
           </p>
         </section>
+        <SiteFooter />
       </div>
     </main>
   );
