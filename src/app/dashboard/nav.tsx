@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import Logo from "@/components/logo";
 
 const ITEMS = [
   { href: "/dashboard/profil", label: "Geschäftsprofil" },
@@ -29,7 +30,7 @@ export default function DashboardNav() {
         className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-sm"
       >
         <Link href="/" className="mr-2 text-lg font-extrabold">
-          <span className="text-[#F36B21]">B</span> Blinko
+          <Logo size={30} />
         </Link>
 
         {ITEMS.map((item) => (

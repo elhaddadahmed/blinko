@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import Logo from "@/components/logo";
 
 function friendlyError(err: unknown): string {
   const e = (typeof err === "object" && err !== null ? err : {}) as { code?: string; message?: string };
@@ -100,7 +101,7 @@ export default function RegistrierenPage() {
     <main className="min-h-screen bg-[#FFF8EF] px-5 py-12 text-[#202A35]">
       <div className="mx-auto max-w-lg">
         <Link href="/" className="text-2xl font-extrabold">
-          <span className="text-[#F36B21]">B</span> Blinko
+          <Logo size={36} />
         </Link>
 
         <section className="mt-8 rounded-3xl border border-orange-100 bg-white p-8 shadow-sm">

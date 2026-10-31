@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { DAYS, parseHours } from "@/lib/hours";
 import StartCard from "./start-card";
+import Logo from "@/components/logo";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen bg-[#FFF8EF] px-5 py-12 text-[#202A35]">
       <div className="mx-auto max-w-2xl">
         <Link href="/" className="text-2xl font-extrabold">
-          <span className="text-[#F36B21]">B</span> Blinko
+          <Logo size={36} />
         </Link>
         {children}
       </div>

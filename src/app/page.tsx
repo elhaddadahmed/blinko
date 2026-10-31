@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "@/components/logo";
 
 const features = [
   {
@@ -46,10 +47,7 @@ export default function Home() {
     <main className="min-h-screen overflow-hidden bg-[#fff8ef] text-[#202a35]">
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
         <a href="#" className="flex items-center gap-2.5 text-2xl font-black tracking-tight">
-          <span className="grid size-10 place-items-center rounded-xl bg-[#f36b21] text-white">
-            B
-          </span>
-          Blinko<span className="text-[#f36b21]">.</span>
+          <Logo size={40} />
         </a>
 
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
