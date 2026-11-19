@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import Logo from "@/components/logo";
 
 const ITEMS = [
+  { href: "/dashboard", label: "Übersicht" },
   { href: "/dashboard/profil", label: "Geschäftsprofil" },
   { href: "/dashboard/treueprogramm", label: "Treueprogramm" },
   { href: "/dashboard/stempeln", label: "Stempeln" },

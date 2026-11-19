@@ -51,8 +51,14 @@ export default function Home() {
         </a>
 
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
+          <a href="#so-funktionierts" className="hover:text-[#f36b21]">
+            So funktioniert&apos;s
+          </a>
           <a href="#funktionen" className="hover:text-[#f36b21]">
             Funktionen
+          </a>
+          <a href="#faq" className="hover:text-[#f36b21]">
+            FAQ
           </a>
           <a href="#branchen" className="hover:text-[#f36b21]">
             Für Unternehmen
@@ -83,14 +89,14 @@ export default function Home() {
           </span>
 
           <h1 className="mt-7 text-5xl leading-[1.05] font-black tracking-tight sm:text-6xl lg:text-7xl">
-            Deine digitale{" "}
-            <span className="text-[#f36b21]">Kundenbindung.</span>
+            Mehr Stammkunden.{" "}
+            <span className="text-[#f36b21]">Ohne komplizierte Apps.</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-8 text-[#59616a]">
-            Gewinne Stammkunden für dein Geschäft. Verbinde NFC, QR-Codes
-            und digitale Treuekarten auf einer einfachen Plattform – ganz
-            ohne App für deine Kunden.
+            Mit Blinko belohnst du treue Kunden, machst dein Geschäft digital
+            sichtbar und gibst Kunden einen Grund, wiederzukommen – mit
+            QR-Code, NFC und einer digitalen Stempelkarte.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -98,14 +104,14 @@ export default function Home() {
               href="/registrieren"
               className="rounded-full bg-[#f36b21] px-6 py-4 font-bold text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:bg-[#d95612]"
             >
-              Konto erstellen ↗
+              Jetzt testen ↗
             </Link>
-            <a
-              href="#funktionen"
+            <Link
+              href="/demo"
               className="rounded-full border border-[#e5d8c9] px-6 py-4 font-bold transition hover:bg-white"
             >
-              Mehr erfahren ↓
-            </a>
+              Demo ansehen
+            </Link>
           </div>
 
           <p className="mt-5 text-sm text-[#77736d]">
@@ -215,6 +221,58 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="so-funktionierts" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+        <h2 className="text-3xl font-black sm:text-4xl">So funktioniert Blinko</h2>
+        <p className="mt-3 max-w-2xl text-[#59616a]">In drei Schritten zur digitalen Stempelkarte.</p>
+        <ol className="mt-10 grid gap-6 md:grid-cols-3">
+          {[
+            ["1", "Code platzieren", "Hänge deinen QR-Code oder NFC-Tag an Kasse oder Tisch."],
+            ["2", "Kunde scannt", "Mit der Smartphone-Kamera. Keine App, keine Anmeldung."],
+            ["3", "Kunden belohnen", "Stempel vergeben, Belohnung einlösen, Wiederkehrer erkennen."],
+          ].map(([n, title, text]) => (
+            <li key={n} className="rounded-3xl border border-[#efe4d7] bg-white p-7">
+              <span className="grid size-10 place-items-center rounded-full bg-[#f36b21] font-black text-white">{n}</span>
+              <h3 className="mt-5 text-xl font-extrabold">{title}</h3>
+              <p className="mt-2 leading-7 text-[#59616a]">{text}</p>
+            </li>
+          ))}
+        </ol>
+        <Link href="/demo" className="mt-8 inline-flex rounded-full border border-[#e5d8c9] px-6 py-4 font-bold transition hover:bg-white">
+          Demo ansehen →
+        </Link>
+      </section>
+
+      <section id="vorteile" className="border-y border-[#efe4d7] bg-white/60 px-6 py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:items-center lg:px-10">
+          <div>
+            <h2 className="text-3xl font-black sm:text-4xl">Das bringt dir Blinko</h2>
+            <ul className="mt-6 space-y-3 text-lg leading-8">
+              <li>✓ Kunden bekommen einen Grund, wiederzukommen</li>
+              <li>✓ Eine einfache digitale Stempelkarte statt Papier</li>
+              <li>✓ Keine App-Installation für deine Kunden</li>
+              <li>✓ Eingerichtet in wenigen Minuten</li>
+              <li>✓ Du siehst, wie oft Karten genutzt werden</li>
+            </ul>
+          </div>
+          <div className="rounded-3xl border border-[#efe4d7] bg-white p-6 shadow-sm" aria-label="Beispielansicht des Dashboards">
+            <p className="text-xs font-bold tracking-widest text-[#8b8176] uppercase">Beispielzahlen aus dem Dashboard</p>
+            <dl className="mt-4 grid grid-cols-2 gap-4">
+              {[
+                ["Treuekarten gestartet", "128"],
+                ["Stempel diese Woche", "94"],
+                ["Aktive Karten", "61"],
+                ["Belohnungen eingelöst", "17"],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-2xl bg-[#fff8ef] p-4">
+                  <dt className="text-xs text-[#77736d]">{label}</dt>
+                  <dd className="mt-1 text-2xl font-black">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
       <section id="funktionen" className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
         <div className="max-w-2xl">
           <span className="rounded-full bg-[#ffe3c5] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#8b421b]">
@@ -303,6 +361,44 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="faq" className="mx-auto max-w-3xl px-6 py-20">
+        <h2 className="text-3xl font-black sm:text-4xl">Häufige Fragen</h2>
+        <div className="mt-8 space-y-3">
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Muss der Kunde eine App installieren?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Nein. Die Treuekarte läuft direkt im Browser des Smartphones. Der Kunde öffnet sie per QR-Code oder über einen NFC-Link.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Funktioniert Blinko mit iPhone und Android?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Ja, in jedem aktuellen Smartphone-Browser. Kunden scannen den QR-Code mit der normalen Kamera. Du als Inhaber scannst die Karten im Dashboard mit der Kamera deines Smartphones. Alternativ tippst du die 6-stellige Nummer ein.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Wie funktioniert NFC?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Auf einen NFC-Tag schreibst du den Link zu deinem Profil. Der Kunde hält sein Smartphone daran, und dein Profil öffnet sich. Der Tag selbst vergibt keine Stempel.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Kann auch ein QR-Code verwendet werden?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Ja. Im Dashboard unter „QR-Code & NFC“ lädst du deinen QR-Code herunter oder druckst ihn aus.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Wie erhält der Kunde einen Stempel?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Der Kunde zeigt den Code auf seiner Karte. Er wechselt jede Minute und gilt nur einmal. Du scannst ihn oder tippst die Nummer unter „Stempeln“ ein und bestätigst. So kann niemand ohne dich Stempel vergeben.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Was kostet Blinko?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Blinko befindet sich in der Pilotphase. Die Preise legen wir nach den ersten Testbetrieben fest.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Wie kann ein Unternehmen starten?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Konto erstellen, Profil anlegen, Treueprogramm aktivieren und den QR-Code an der Kasse platzieren.</p>
+            </details>
+            <details className="group rounded-2xl border border-[#efe4d7] bg-white p-5">
+              <summary className="cursor-pointer list-none font-bold">Welche Daten werden gespeichert?</summary>
+              <p className="mt-3 leading-7 text-[#59616a]">Von Kunden speichern wir weder Namen noch E-Mail-Adressen, nur eine anonyme Kartennummer, den Stempelstand und die Zeitpunkte der Stempel. Mehr steht in der Datenschutzerklärung.</p>
+            </details>
+        </div>
+      </section>
+
       <section id="starten" className="bg-[#f36b21] px-6 py-16 text-center text-white sm:py-20">
         <h2 className="text-3xl font-black sm:text-5xl">
           Mach aus Besuchern Stammkunden.
@@ -314,7 +410,7 @@ export default function Home() {
           href="/registrieren"
           className="mt-8 inline-flex rounded-full bg-white px-7 py-4 font-extrabold text-[#bd4d15] transition hover:bg-[#fff0e1]"
         >
-          Konto erstellen ↗
+          Jetzt testen ↗
         </Link>
         <p className="mt-4 text-sm text-orange-50">
           Schon dabei?{" "}

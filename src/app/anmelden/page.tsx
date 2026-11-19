@@ -30,7 +30,7 @@ export default function AnmeldenPage() {
         throw loginError;
       }
 
-      router.push("/dashboard/profil");
+      router.push("/dashboard");
       router.refresh();
     } catch (err) {
       setError(

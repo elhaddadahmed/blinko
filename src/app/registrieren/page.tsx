@@ -78,7 +78,7 @@ export default function RegistrierenPage() {
       }
 
       if (data.session) {
-        router.push("/dashboard/profil");
+        router.push("/dashboard");
         router.refresh();
       } else {
         setSentTo(email.trim());
