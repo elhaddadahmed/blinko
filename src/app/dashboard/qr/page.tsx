@@ -178,6 +178,12 @@ export default function QrPage() {
                 </div>
               </div>
 
+              <p className="mt-6 text-center print:hidden">
+                <Link href="/dashboard/aufsteller" className="font-semibold text-[#F36B21] underline">
+                  Fertigen Aufsteller für Tisch oder Kasse drucken →
+                </Link>
+              </p>
+
               <div className="mt-10 print:hidden">
                 <h2 className="text-xl font-bold">NFC-Tag beschreiben</h2>
                 <ol className="mt-3 list-decimal space-y-2 pl-5 leading-7 text-gray-700">
