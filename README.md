@@ -20,3 +20,7 @@ Tests: `supabase/tests/loyalty_security_test.sql` (nur gegen eine lokale Test-Da
 Trage deine Anbieterdaten in `src/lib/legal.ts` ein. Die Seiten `/impressum`, `/datenschutz`, `/agb` und `/avv` sind Entwürfe
 und zeigen einen Hinweis, bis `reviewed` auf `true` steht (nach rechtlicher Prüfung).
 Konto löschen und Datenexport: Dashboard → Konto (Migration `supabase/migrations/0003_delete_account.sql`).
+
+## Datenbank in einem Schritt
+`supabase/setup_all.sql` enthält alle Migrationen (0001 bis 0005) in einer Datei. Ganzen Inhalt im Supabase SQL Editor
+ausführen (mehrfaches Ausführen ist unkritisch). Am Ende zeigt eine Abfrage fünf Werte, die alle `true` sein müssen.
