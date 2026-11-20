@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { LOGO_BUCKET, LOGO_TYPES, resizeLogo, safeLogoUrl } from "@/lib/logo";
 import { DAYS, parseHours, type Hours } from "@/lib/hours";
 import Logo from "@/components/logo";
 
@@ -84,6 +85,9 @@ export default function BusinessProfilePage() {
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
   const [hours, setHours] = useState<Hours>({});
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoBusy, setLogoBusy] = useState(false);
+  const [logoError, setLogoError] = useState("");
   const [businessId, setBusinessId] = useState("");
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
@@ -136,7 +140,7 @@ export default function BusinessProfilePage() {
         const { data: profile, error: profileError } = await supabase
           .from("business_profiles")
           .select(
-            "name, category, description, address_public, website_url, phone_public, opening_hours, slug, is_published"
+            "name, category, description, address_public, website_url, phone_public, opening_hours, logo_url, slug, is_published"
           )
           .eq("business_id", id)
           .maybeSingle();
@@ -152,6 +156,7 @@ export default function BusinessProfilePage() {
           setWebsite(profile.website_url ?? "");
           setPhone(profile.phone_public ?? "");
           setHours(parseHours(profile.opening_hours));
+          setLogoUrl(safeLogoUrl(profile.logo_url));
           setSlug(profile.slug ?? "");
           setIsPublished(Boolean(profile.is_published));
         }
@@ -174,6 +179,60 @@ export default function BusinessProfilePage() {
       cancelled = true;
     };
   }, []);
+
+  async function uploadLogo(file: File | undefined) {
+    if (!file || !businessId || logoBusy) return;
+    setLogoError("");
+    if (!LOGO_TYPES.includes(file.type)) {
+      setLogoError("Bitte wähle ein PNG-, JPEG- oder WebP-Bild.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setLogoError("Das Bild ist zu groß (höchstens 10 MB).");
+      return;
+    }
+    setLogoBusy(true);
+    try {
+      const blob = await resizeLogo(file);
+      if (blob.size > 1024 * 1024) throw new Error("Das Bild ist auch nach dem Verkleinern größer als 1 MB.");
+      const path = `${businessId}/logo.png`;
+      const { error: upErr } = await supabase.storage
+        .from(LOGO_BUCKET)
+        .upload(path, blob, { upsert: true, contentType: "image/png", cacheControl: "3600" });
+      if (upErr) throw upErr;
+      const url = `${supabase.storage.from(LOGO_BUCKET).getPublicUrl(path).data.publicUrl}?v=${Date.now()}`;
+      const { error: dbErr } = await supabase
+        .from("business_profiles").update({ logo_url: url }).eq("business_id", businessId);
+      if (dbErr) throw dbErr;
+      setLogoUrl(safeLogoUrl(url));
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      setLogoError(
+        /bucket not found/i.test(msg)
+          ? "Der Logo-Speicher ist noch nicht eingerichtet (Datei 0005_logo_storage.sql)."
+          : msg || "Das Logo konnte nicht hochgeladen werden."
+      );
+    } finally {
+      setLogoBusy(false);
+    }
+  }
+
+  async function removeLogo() {
+    if (!businessId || logoBusy) return;
+    setLogoBusy(true);
+    setLogoError("");
+    try {
+      await supabase.storage.from(LOGO_BUCKET).remove([`${businessId}/logo.png`]);
+      const { error: dbErr } = await supabase
+        .from("business_profiles").update({ logo_url: null }).eq("business_id", businessId);
+      if (dbErr) throw dbErr;
+      setLogoUrl(null);
+    } catch (e) {
+      setLogoError(e instanceof Error ? e.message : "Das Logo konnte nicht entfernt werden.");
+    } finally {
+      setLogoBusy(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -418,6 +477,34 @@ export default function BusinessProfilePage() {
                   placeholder="+49 421 123456"
                 />
               </div>
+
+              <fieldset>
+                <legend className="mb-2 block font-semibold">Logo</legend>
+                {!slug ? (
+                  <p className="text-sm text-gray-600">Speichere zuerst dein Profil, dann kannst du ein Logo hochladen.</p>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-4">
+                    {logoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={logoUrl} alt="Dein Logo" width={80} height={80} className="h-20 w-20 rounded-2xl border border-gray-200 bg-white object-contain p-1" />
+                    ) : (
+                      <span className="flex h-20 w-20 items-center justify-center rounded-2xl border border-dashed border-gray-300 text-xs text-gray-500">Kein Logo</span>
+                    )}
+                    <div>
+                      <label htmlFor="logo-file" className="inline-block cursor-pointer rounded-full border border-[#F36B21] px-4 py-2 font-bold text-[#F36B21]">
+                        {logoBusy ? "Wird hochgeladen …" : logoUrl ? "Logo ersetzen" : "Logo hochladen"}
+                      </label>
+                      <input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" disabled={logoBusy} className="sr-only"
+                        onChange={(e) => { void uploadLogo(e.target.files?.[0]); e.target.value = ""; }} />
+                      {logoUrl && (
+                        <button type="button" onClick={removeLogo} disabled={logoBusy} className="ml-3 text-sm font-semibold text-gray-600 underline">Entfernen</button>
+                      )}
+                      <p className="mt-2 text-xs text-gray-500">PNG, JPEG oder WebP. Wird automatisch verkleinert.</p>
+                    </div>
+                  </div>
+                )}
+                {logoError && <p role="alert" className="mt-2 text-sm text-red-700">{logoError}</p>}
+              </fieldset>
 
               <fieldset>
                 <legend className="mb-2 block font-semibold">Öffnungszeiten</legend>

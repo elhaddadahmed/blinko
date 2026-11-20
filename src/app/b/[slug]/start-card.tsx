@@ -32,7 +32,11 @@ export default function StartCard({ slug }: { slug: string }) {
     });
     setBusy(false);
     if (rpcError || !data?.ok) {
-      setError("Die Treuekarte konnte nicht erstellt werden. Bitte versuche es später erneut.");
+      setError(
+        data?.error === "rate_limited"
+          ? "Gerade werden sehr viele Karten angelegt. Bitte versuche es in ein paar Minuten noch einmal."
+          : "Die Treuekarte konnte nicht erstellt werden. Bitte versuche es später erneut."
+      );
       return;
     }
     try {

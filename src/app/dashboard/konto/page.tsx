@@ -95,6 +95,14 @@ export default function AccountPage() {
     setBusy(true);
     setError("");
     setMessage("");
+    // Logo-Dateien zuerst entfernen (Fehler hier sind unkritisch, z. B. wenn es keins gibt)
+    const { data: auth } = await supabase.auth.getUser();
+    if (auth.user) {
+      const { data: owned } = await supabase.from("businesses").select("id").eq("owner_id", auth.user.id);
+      for (const b of owned ?? []) {
+        await supabase.storage.from("logos").remove([`${b.id}/logo.png`]);
+      }
+    }
     const { data, error: rpcError } = await supabase.rpc("delete_my_account");
     if (rpcError || !data?.ok) {
       setBusy(false);

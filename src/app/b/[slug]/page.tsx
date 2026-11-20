@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { DAYS, parseHours } from "@/lib/hours";
 import StartCard from "./start-card";
+import { safeLogoUrl } from "@/lib/logo";
 import Logo from "@/components/logo";
 import SiteFooter from "@/components/site-footer";
 
@@ -47,7 +48,7 @@ async function BusinessProfile({ params }: Props) {
 
   const { data: profile, error } = await supabase
     .from("business_profiles")
-    .select("business_id, name, category, description, address_public, website_url, phone_public, opening_hours, slug")
+    .select("business_id, name, category, description, address_public, website_url, phone_public, opening_hours, logo_url, slug")
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -63,12 +64,23 @@ async function BusinessProfile({ params }: Props) {
     .eq("is_active", true)
     .maybeSingle();
 
+  const logo = safeLogoUrl(profile.logo_url);
   const hours = parseHours(profile.opening_hours);
   const hasHours = Object.keys(hours).length > 0;
 
   return (
     <section className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white shadow-sm">
       <div className="bg-[#F36B21] px-8 py-10 text-white">
+        {logo && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={logo}
+            alt={`Logo von ${profile.name}`}
+            width={64}
+            height={64}
+            className="mb-4 h-16 w-16 rounded-2xl bg-white object-contain p-1"
+          />
+        )}
         <p className="text-sm font-semibold uppercase tracking-wider">
           {profile.category}
         </p>
