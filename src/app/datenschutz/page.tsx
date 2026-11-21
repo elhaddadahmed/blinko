@@ -66,14 +66,25 @@ export default function DatenschutzPage() {
         Löschung an das Unternehmen, bei dem Sie die Karte nutzen.
       </p>
 
-      <h2>6. Cookies und lokale Speicherung</h2>
+      <h2>6. Push-Benachrichtigungen (freiwillig)</h2>
+      <p>
+        Auf der Treuekarte können Sie Benachrichtigungen einschalten, zum Beispiel wenn Sie einen Stempel
+        bekommen oder Ihre Belohnung bereit ist. Dafür speichern wir die technischen Daten Ihres Push-Abos
+        (Adresse des Push-Dienstes Ihres Browsers und Schlüssel) und ordnen sie Ihrer Karte zu. Die Nachrichten
+        werden über den Push-Dienst Ihres Browser- oder Geräteherstellers zugestellt (zum Beispiel Apple,
+        Google oder Mozilla). Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1
+        TDDDG). Sie können sie jederzeit auf der Karte oder in den Einstellungen Ihres Browsers widerrufen.
+        Wir senden darüber keine Werbung.
+      </p>
+
+      <h2>7. Cookies und lokale Speicherung</h2>
       <p>
         Wir setzen keine Tracking- oder Analyse-Dienste ein. Für angemeldete Unternehmen wird die Sitzung
         im Browser gespeichert, und die Treuekarte speichert ihren Link im Browser. Beides ist für den
         gewünschten Dienst erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG).
       </p>
 
-      <h2>7. Ihre Rechte</h2>
+      <h2>8. Ihre Rechte</h2>
       <p>
         Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
         Datenübertragbarkeit und Widerspruch (Art. 15 bis 21 DSGVO). Sie können eine erteilte Einwilligung

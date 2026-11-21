@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -18,6 +19,32 @@ const ITEMS = [
 export default function DashboardNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const [rewards, setRewards] = useState(0);
+
+  // Zählt Karten mit bereiter Belohnung und zeigt sie als Hinweis am Menüpunkt „Stempeln“
+  useEffect(() => {
+    let stop = false;
+    async function check() {
+      if (document.hidden) return;
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data: biz } = await supabase.from("businesses").select("id").eq("owner_id", auth.user.id).limit(1);
+      if (!biz?.length) return;
+      const { data: prog } = await supabase
+        .from("loyalty_programs").select("stamps_required").eq("business_id", biz[0].id).maybeSingle();
+      if (!prog) return;
+      const res = await supabase
+        .from("loyalty_cards").select("id", { count: "exact", head: true })
+        .eq("status", "active").gte("stamps", prog.stamps_required as number);
+      if (!stop && !res.error) setRewards(res.count ?? 0);
+    }
+    void check();
+    const id = setInterval(check, 30000);
+    return () => {
+      stop = true;
+      clearInterval(id);
+    };
+  }, []);
 
   async function logout() {
     await supabase.auth.signOut();
@@ -47,6 +74,12 @@ export default function DashboardNav() {
             }
           >
             {item.label}
+            {item.href === "/dashboard/stempeln" && rewards > 0 && (
+              <span className="ml-1.5 rounded-full bg-[#F36B21] px-2 py-0.5 text-xs font-bold text-white">
+                {rewards}
+                <span className="sr-only"> Belohnungen bereit</span>
+              </span>
+            )}
           </Link>
         ))}
 

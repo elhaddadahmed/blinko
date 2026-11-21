@@ -20,7 +20,7 @@ export default function AvvPage() {
       <h2>2. Art, Zweck, Daten und Betroffene</h2>
       <ul>
         <li>Zweck: Bereitstellung von Treuekarten, Stempeln und Einlösungen für die Kundschaft des Verantwortlichen.</li>
-        <li>Datenarten: pseudonymer Kartenschlüssel (nur als Hash), Stempelstand, Zeitpunkte von Stempeln und Einlösungen.</li>
+        <li>Datenarten: pseudonymer Kartenschlüssel (nur als Hash), Stempelstand, Zeitpunkte von Stempeln und Einlösungen, bei freiwillig eingeschalteten Benachrichtigungen die technischen Daten des Push-Abos.</li>
         <li>Betroffene: Kundinnen und Kunden des Verantwortlichen, die eine Treuekarte nutzen.</li>
       </ul>
 
@@ -40,6 +40,7 @@ export default function AvvPage() {
         <li>Vercel Inc. (Hosting)</li>
         <li>Supabase (Datenbank und Anmeldung), Region: {fill(LEGAL.supabaseRegion)}</li>
         {LEGAL.emailProvider.trim() && <li>{LEGAL.emailProvider} (E-Mail-Versand)</li>}
+        <li>Push-Dienste der Browser- und Gerätehersteller (zum Beispiel Apple, Google, Mozilla), nur bei eingeschalteten Benachrichtigungen</li>
       </ul>
       <p>Über Änderungen wird der Verantwortliche vorab informiert und kann ihnen widersprechen.</p>
 

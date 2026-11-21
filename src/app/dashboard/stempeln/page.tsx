@@ -28,6 +28,21 @@ const ERRORS: Record<string, string> = {
   not_enough_stamps: "Für diese Belohnung fehlen noch Stempel (oder sie wurde schon eingelöst).",
   card_not_found: "Karte nicht gefunden.",
 };
+async function notifyCustomer(cardId: string) {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const jwt = data.session?.access_token;
+    if (!jwt) return;
+    await fetch("/api/push/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+      body: JSON.stringify({ card_id: cardId }),
+    });
+  } catch {
+    /* Benachrichtigung ist optional und darf das Stempeln nie stören */
+  }
+}
+
 const errText = (code?: string) => (code && ERRORS[code]) || "Das hat nicht geklappt. Bitte versuche es erneut.";
 
 export default function StampPage() {
@@ -134,6 +149,7 @@ export default function StampPage() {
     const { data } = await supabase.rpc("stamp_card", { p_token: cred.token, p_code: cred.code });
     setBusy(false);
     if (data?.ok) {
+      if (typeof data.card_id === "string") void notifyCustomer(data.card_id);
       setResult(
         data.reward_ready
           ? `Stempel vergeben: ${data.stamps} von ${data.stamps_required}. Die Belohnung ist bereit.`

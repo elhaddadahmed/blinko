@@ -11,7 +11,12 @@ export const metadata = {
 
 async function Inner({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  return <CardView token={token} />;
+  return (
+    <>
+      <link rel="manifest" href={`/karte/${token}/manifest.webmanifest`} />
+      <CardView token={token} />
+    </>
+  );
 }
 
 export default function CardPage({ params }: { params: Promise<{ token: string }> }) {

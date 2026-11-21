@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
 import { supabase } from "@/lib/supabase";
+import PushToggle from "./push-toggle";
 
 type Card = {
   business_name: string;
@@ -171,6 +172,8 @@ export default function CardView({ token }: { token: string }) {
           )}
         </div>
       )}
+
+      <PushToggle token={token} />
 
       <div className="mt-8 rounded-xl bg-[#FFF8EF] p-4 text-sm leading-6 text-gray-700">
         <p className="font-semibold">Wichtig: Karte merken</p>

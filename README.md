@@ -24,3 +24,9 @@ Konto löschen und Datenexport: Dashboard → Konto (Migration `supabase/migrati
 ## Datenbank in einem Schritt
 `supabase/setup_all.sql` enthält alle Migrationen (0001 bis 0005) in einer Datei. Ganzen Inhalt im Supabase SQL Editor
 ausführen (mehrfaches Ausführen ist unkritisch). Am Ende zeigt eine Abfrage fünf Werte, die alle `true` sein müssen.
+
+## Push-Benachrichtigungen (optional)
+Kunden können auf ihrer Karte Benachrichtigungen einschalten (Stempel erhalten, Belohnung bereit).
+Einrichtung: Schlüssel mit `npx web-push generate-vapid-keys` erzeugen und diese Variablen setzen:
+`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` (geheim), `VAPID_SUBJECT` (`mailto:…`). Datenbank: Migration `0006_push.sql`.
+Ohne diese Variablen bleibt die Funktion unsichtbar. Auf dem iPhone nur als Web-App vom Home-Bildschirm (iOS 16.4 oder neuer).
