@@ -5,6 +5,7 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import { supabase } from "@/lib/supabase";
 import PushToggle from "./push-toggle";
+import NearbyWatcher from "./nearby-watcher";
 
 type Card = {
   business_name: string;
@@ -18,6 +19,8 @@ type Card = {
   status: string;
   program_active: boolean;
   reward_ready: boolean;
+  nearby?: { lat: number; lng: number; radius_m: number; text: string | null } | null;
+  offer?: { title: string; body: string; valid_until: string | null } | null;
 };
 
 type Scan = { qr: string; code: string; expiresAt: number };
@@ -126,6 +129,19 @@ export default function CardView({ token }: { token: string }) {
       <h1 className="mt-1 text-2xl font-extrabold">{card.program_name}</h1>
       {card.description && <p className="mt-2 text-sm text-gray-600">{card.description}</p>}
 
+      {card.offer && (
+        <div className="mt-5 rounded-2xl border-2 border-[#F36B21] p-4">
+          <p className="text-xs font-bold uppercase text-[#F36B21]">Aktuelles Angebot</p>
+          <p className="mt-1 font-bold">{card.offer.title}</p>
+          <p className="text-sm text-gray-700">{card.offer.body}</p>
+          {card.offer.valid_until && (
+            <p className="mt-1 text-xs text-gray-500">
+              Gültig bis {new Date(card.offer.valid_until).toLocaleDateString("de-DE", { timeZone: "Europe/Berlin" })}
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="mt-6 flex flex-wrap gap-2" role="img"
         aria-label={`${card.stamps} von ${card.stamps_required} Stempeln`}>
         {Array.from({ length: card.stamps_required }, (_, i) => (
@@ -173,7 +189,10 @@ export default function CardView({ token }: { token: string }) {
         </div>
       )}
 
-      <PushToggle token={token} />
+      <PushToggle token={token} businessName={card.business_name} />
+      {card.nearby && (
+        <NearbyWatcher nearby={card.nearby} businessName={card.business_name} slug={card.slug} />
+      )}
 
       <div className="mt-8 rounded-xl bg-[#FFF8EF] p-4 text-sm leading-6 text-gray-700">
         <p className="font-semibold">Wichtig: Karte merken</p>

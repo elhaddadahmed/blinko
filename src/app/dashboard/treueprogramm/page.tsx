@@ -9,6 +9,9 @@ type MessageType = "info" | "success" | "error";
 function errorText(error: unknown): string {
   if (typeof error === "object" && error !== null) {
     const e = error as { code?: string; message?: string };
+    if (e.code === "42703") {
+      return "Die Datenbank ist noch nicht auf dem neuesten Stand. Führe die Datei setup_all.sql im Supabase SQL Editor aus.";
+    }
     if (e.code === "PGRST205" || e.code === "42P01") {
       return "Die Datenbank für das Treueprogramm ist noch nicht eingerichtet. Führe zuerst die Datei 0002_loyalty.sql im Supabase SQL Editor aus.";
     }
@@ -32,6 +35,12 @@ export default function LoyaltyProgramPage() {
   const [reward, setReward] = useState("");
   const [terms, setTerms] = useState("");
   const [isActive, setIsActive] = useState(false);
+  const [nearbyOn, setNearbyOn] = useState(false);
+  const [nearbyLat, setNearbyLat] = useState("");
+  const [nearbyLng, setNearbyLng] = useState("");
+  const [nearbyRadius, setNearbyRadius] = useState("200");
+  const [nearbyText, setNearbyText] = useState("");
+  const [locating, setLocating] = useState(false);
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<MessageType>("info");
@@ -75,7 +84,7 @@ export default function LoyaltyProgramPage() {
 
         const { data: program, error: programError } = await supabase
           .from("loyalty_programs")
-          .select("id, name, description, stamps_required, reward, terms, is_active")
+          .select("id, name, description, stamps_required, reward, terms, is_active, nearby_enabled, nearby_lat, nearby_lng, nearby_radius_m, nearby_text")
           .eq("business_id", bid)
           .maybeSingle();
         if (programError) throw programError;
@@ -89,6 +98,11 @@ export default function LoyaltyProgramPage() {
           setReward(program.reward ?? "");
           setTerms(program.terms ?? "");
           setIsActive(Boolean(program.is_active));
+          setNearbyOn(Boolean(program.nearby_enabled));
+          setNearbyLat(program.nearby_lat == null ? "" : String(program.nearby_lat));
+          setNearbyLng(program.nearby_lng == null ? "" : String(program.nearby_lng));
+          setNearbyRadius(String(program.nearby_radius_m ?? 200));
+          setNearbyText((program.nearby_text as string | null) ?? "");
         }
       } catch (e) {
         if (!cancelled) show(errorText(e), "error");
@@ -123,6 +137,18 @@ export default function LoyaltyProgramPage() {
         throw new Error("Die Stempelanzahl muss eine ganze Zahl zwischen 2 und 50 sein.");
       }
 
+      const lat = nearbyLat.trim() === "" ? null : Number(nearbyLat.replace(",", "."));
+      const lng = nearbyLng.trim() === "" ? null : Number(nearbyLng.replace(",", "."));
+      const radius = Number(nearbyRadius);
+      if (nearbyOn) {
+        if (lat === null || lng === null || Number.isNaN(lat) || Number.isNaN(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+          throw new Error("Für den Nähe-Hinweis brauchst du den Standort deines Geschäfts.");
+        }
+        if (!Number.isInteger(radius) || radius < 50 || radius > 1000) {
+          throw new Error("Der Radius muss zwischen 50 und 1000 Metern liegen.");
+        }
+      }
+
       const values = {
         name: trimmedName,
         description: description.trim() || null,
@@ -130,6 +156,11 @@ export default function LoyaltyProgramPage() {
         reward: trimmedReward,
         terms: terms.trim() || null,
         is_active: isActive,
+        nearby_enabled: nearbyOn,
+        nearby_lat: lat !== null && !Number.isNaN(lat) ? lat : null,
+        nearby_lng: lng !== null && !Number.isNaN(lng) ? lng : null,
+        nearby_radius_m: Number.isInteger(radius) && radius >= 50 && radius <= 1000 ? radius : 200,
+        nearby_text: nearbyText.trim() || null,
       };
 
       if (programId) {
@@ -247,6 +278,67 @@ export default function LoyaltyProgramPage() {
                   className="w-full rounded-xl border border-gray-300 px-4 py-3"
                   placeholder="z. B. Ein Stempel pro Besuch. Nicht mit anderen Aktionen kombinierbar." />
               </div>
+
+              <fieldset className="rounded-xl border border-gray-200 p-4">
+                <legend className="px-2 font-semibold">Nähe-Hinweis (Beta)</legend>
+                <p className="text-sm text-gray-600">
+                  Kunden, die es auf ihrer Karte erlauben, sehen einen Hinweis, wenn sie in der Nähe sind. Das klappt nur,
+                  solange die Karte auf ihrem Handy geöffnet ist, nicht im Hintergrund. Der Standort der Kunden wird nie gespeichert.
+                </p>
+                <label className="mt-3 flex cursor-pointer items-center gap-3">
+                  <input type="checkbox" checked={nearbyOn} onChange={(e) => setNearbyOn(e.target.checked)} className="h-5 w-5 accent-orange-500" />
+                  <span className="font-semibold">Nähe-Hinweis anbieten</span>
+                </label>
+                {nearbyOn && (
+                  <div className="mt-4 space-y-3">
+                    <button type="button" disabled={locating}
+                      onClick={() => {
+                        if (!("geolocation" in navigator)) return;
+                        setLocating(true);
+                        navigator.geolocation.getCurrentPosition(
+                          (pos) => {
+                            setNearbyLat(pos.coords.latitude.toFixed(5));
+                            setNearbyLng(pos.coords.longitude.toFixed(5));
+                            setLocating(false);
+                          },
+                          () => {
+                            setMessage("Der Standort konnte nicht ermittelt werden. Du kannst die Werte auch von Hand eintragen.");
+                            setMessageType("error");
+                            setLocating(false);
+                          },
+                          { enableHighAccuracy: true, timeout: 20000 }
+                        );
+                      }}
+                      className="rounded-full border border-[#F36B21] px-4 py-2 font-bold text-[#F36B21] disabled:opacity-60">
+                      {locating ? "Standort wird ermittelt …" : "Aktuellen Standort als Geschäftsstandort übernehmen"}
+                    </button>
+                    <p className="text-xs text-gray-500">Am besten tippst du das, während du im Geschäft stehst.</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="nlat" className="mb-1 block text-sm font-semibold">Breitengrad</label>
+                        <input id="nlat" inputMode="decimal" value={nearbyLat} onChange={(e) => setNearbyLat(e.target.value)} className="w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="53.07930" />
+                      </div>
+                      <div>
+                        <label htmlFor="nlng" className="mb-1 block text-sm font-semibold">Längengrad</label>
+                        <input id="nlng" inputMode="decimal" value={nearbyLng} onChange={(e) => setNearbyLng(e.target.value)} className="w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="8.80170" />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="nrad" className="mb-1 block text-sm font-semibold">Radius</label>
+                      <select id="nrad" value={nearbyRadius} onChange={(e) => setNearbyRadius(e.target.value)} className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2">
+                        <option value="100">100 Meter</option>
+                        <option value="200">200 Meter</option>
+                        <option value="300">300 Meter</option>
+                        <option value="500">500 Meter</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="ntext" className="mb-1 block text-sm font-semibold">Text des Hinweises</label>
+                      <input id="ntext" maxLength={120} value={nearbyText} onChange={(e) => setNearbyText(e.target.value)} className="w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="z. B. Heute doppelter Stempel auf Cappuccino" />
+                    </div>
+                  </div>
+                )}
+              </fieldset>
 
               <div className="rounded-xl border border-orange-100 bg-orange-50 p-4">
                 <label className="flex cursor-pointer items-center gap-3">

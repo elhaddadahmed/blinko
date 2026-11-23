@@ -25,6 +25,7 @@ self.addEventListener("push", (event) => {
       icon: "/icons/icon-192.png",
       badge: "/icons/icon-192.png",
       tag: data.tag || "blinko",
+      data: { url: typeof data.url === "string" && data.url.startsWith("/") ? data.url : null },
     })
   );
 });
@@ -33,6 +34,8 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
     (async () => {
+      const target = event.notification.data && event.notification.data.url;
+      if (target) return self.clients.openWindow(target);
       const cache = await caches.open(META);
       const saved = await cache.match("/__card_url");
       const url = saved ? await saved.text() : "/";

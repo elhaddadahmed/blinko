@@ -77,14 +77,33 @@ export default function DatenschutzPage() {
         Wir senden darüber keine Werbung.
       </p>
 
-      <h2>7. Cookies und lokale Speicherung</h2>
+      <h2>7. Angebote (freiwillig, getrennte Einwilligung)</h2>
+      <p>
+        Zusätzlich zu den Benachrichtigungen über Stempel können Sie auf der Karte erlauben, dass Ihnen das
+        Unternehmen gelegentlich Angebote als Push-Nachricht schickt. Das ist eine eigene Einwilligung
+        (Art. 6 Abs. 1 lit. a DSGVO), die standardmäßig ausgeschaltet ist. Wir speichern dafür, ob Sie zugestimmt
+        haben, wann, und wann Sie zuletzt ein Angebot bekommen haben. Es gelten Ruhezeiten (21 bis 8 Uhr) und
+        eine Höchstzahl: pro Gerät höchstens ein Angebot alle drei Tage. Sie können die Einwilligung jederzeit
+        mit einem Klick auf der Karte zurücknehmen. Aktuelle Angebote erscheinen außerdem auf der öffentlichen
+        Profilseite und auf Ihrer Karte.
+      </p>
+
+      <h2>8. Nähe-Hinweis (freiwillig, Beta)</h2>
+      <p>
+        Wenn Sie den Nähe-Hinweis einschalten, fragt Ihr Browser nach Ihrem Standort. Der Abgleich mit dem
+        Standort des Geschäfts geschieht ausschließlich auf Ihrem Gerät, solange die Karte geöffnet ist. Ihr
+        Standort wird weder gespeichert noch an uns oder das Unternehmen übertragen. Die Einstellung merkt sich
+        Ihr Browser lokal. Sie können sie jederzeit ausschalten und die Standortfreigabe im Browser widerrufen.
+      </p>
+
+      <h2>9. Cookies und lokale Speicherung</h2>
       <p>
         Wir setzen keine Tracking- oder Analyse-Dienste ein. Für angemeldete Unternehmen wird die Sitzung
         im Browser gespeichert, und die Treuekarte speichert ihren Link im Browser. Beides ist für den
         gewünschten Dienst erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG).
       </p>
 
-      <h2>8. Ihre Rechte</h2>
+      <h2>10. Ihre Rechte</h2>
       <p>
         Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
         Datenübertragbarkeit und Widerspruch (Art. 15 bis 21 DSGVO). Sie können eine erteilte Einwilligung

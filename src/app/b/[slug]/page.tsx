@@ -59,10 +59,21 @@ async function BusinessProfile({ params }: Props) {
 
   const { data: program } = await supabase
     .from("loyalty_programs")
-    .select("name, description, stamps_required, reward, terms")
+    .select("id, name, description, stamps_required, reward, terms")
     .eq("business_id", profile.business_id)
     .eq("is_active", true)
     .maybeSingle();
+
+  // Aktuelles Angebot (nur sichtbar, wenn gesendet, nicht abgelaufen und Profil veröffentlicht)
+  const offerRes = program
+    ? await supabase
+        .from("loyalty_campaigns")
+        .select("title, body, valid_until")
+        .eq("program_id", program.id)
+        .order("sent_at", { ascending: false })
+        .limit(1)
+    : null;
+  const offer = offerRes?.data?.[0] ?? null;
 
   const logo = safeLogoUrl(profile.logo_url);
   const hours = parseHours(profile.opening_hours);
@@ -143,6 +154,19 @@ async function BusinessProfile({ params }: Props) {
               ))}
             </dl>
           </>
+        )}
+
+        {offer && (
+          <div className="mt-8 rounded-2xl border-2 border-[#F36B21] p-5">
+            <p className="text-xs font-bold uppercase text-[#F36B21]">Aktuelles Angebot</p>
+            <h2 className="mt-1 font-bold">{offer.title}</h2>
+            <p className="mt-1 text-gray-700">{offer.body}</p>
+            {offer.valid_until && (
+              <p className="mt-2 text-xs text-gray-500">
+                Gültig bis {new Date(offer.valid_until).toLocaleDateString("de-DE", { timeZone: "Europe/Berlin" })}
+              </p>
+            )}
+          </div>
         )}
 
         {program && (

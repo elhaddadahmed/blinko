@@ -11,6 +11,7 @@ const ITEMS = [
   { href: "/dashboard/profil", label: "Geschäftsprofil" },
   { href: "/dashboard/treueprogramm", label: "Treueprogramm" },
   { href: "/dashboard/stempeln", label: "Stempeln" },
+  { href: "/dashboard/angebote", label: "Angebote" },
   { href: "/dashboard/statistiken", label: "Statistiken" },
   { href: "/dashboard/qr", label: "QR-Code & NFC" },
   { href: "/dashboard/konto", label: "Konto" },

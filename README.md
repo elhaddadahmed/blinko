@@ -30,3 +30,9 @@ Kunden können auf ihrer Karte Benachrichtigungen einschalten (Stempel erhalten,
 Einrichtung: Schlüssel mit `npx web-push generate-vapid-keys` erzeugen und diese Variablen setzen:
 `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` (geheim), `VAPID_SUBJECT` (`mailto:…`). Datenbank: Migration `0006_push.sql`.
 Ohne diese Variablen bleibt die Funktion unsichtbar. Auf dem iPhone nur als Web-App vom Home-Bildschirm (iOS 16.4 oder neuer).
+
+## Angebote und Nähe-Hinweis
+- Angebote: Dashboard, Angebote. Nur an Geräte mit ausdrücklicher Einwilligung, Ruhezeit 21 bis 8 Uhr, 1 Angebot pro Tag und Programm,
+  pro Gerät höchstens alle 3 Tage. Datenbank: `0007_campaigns_nearby.sql`, Versand: `/api/push/campaign` (benötigt die VAPID-Schlüssel).
+- Nähe-Hinweis (Beta): Der Abgleich mit dem Standort passiert nur auf dem Gerät der Kundin oder des Kunden und nur, solange die Karte offen ist.
+  Der Standort wird nie gespeichert. Im Hintergrund ist das mit einer Website nicht zuverlässig möglich.
