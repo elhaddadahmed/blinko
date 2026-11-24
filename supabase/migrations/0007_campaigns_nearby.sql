@@ -264,6 +264,7 @@ begin
 end;
 $$;
 
+drop function if exists public.list_my_campaigns();
 create or replace function public.list_my_campaigns()
 returns table (id uuid, name text, title text, body text, segment text, valid_until timestamptz,
                sent_count integer, status text, created_at timestamptz)

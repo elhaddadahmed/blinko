@@ -33,6 +33,13 @@ export async function POST(req: Request) {
     validUntil = d.toISOString();
   }
 
+  let scheduledAt: string | null = null;
+  if (body.scheduled_at) {
+    const d = new Date(str(body.scheduled_at));
+    if (Number.isNaN(d.getTime())) return json({ ok: false, error: "invalid_request" }, 400);
+    scheduledAt = d.toISOString();
+  }
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -58,18 +65,22 @@ export async function POST(req: Request) {
     p_body: str(body.body),
     p_segment: str(body.segment),
     p_valid_until: validUntil,
+    p_scheduled_at: scheduledAt,
   });
   if (started.error) {
     const unauthorized = /jwt|token|not authenticated/i.test(started.error.message);
     return json({ ok: false, error: unauthorized ? "unauthorized" : "start_failed" }, unauthorized ? 401 : 500);
   }
   const info = started.data as {
-    ok: boolean; error?: string; campaign_id?: string; business_name?: string; slug?: string; title?: string; body?: string;
+    ok: boolean; error?: string; campaign_id?: string; business_name?: string; slug?: string; title?: string; body?: string; scheduled?: boolean;
   };
   if (!info?.ok || !info.campaign_id) {
     const code = info?.error ?? "start_failed";
     return json({ ok: false, error: code }, STATUS[code] ?? 400);
   }
+
+  // Geplante Angebote werden später vom Zeitdienst verschickt
+  if (info.scheduled) return json({ ok: true, scheduled: true });
 
   const targetsRes = await db.rpc("get_campaign_targets", { p_campaign_id: info.campaign_id });
   const targets = (targetsRes.data ?? []) as Target[];
@@ -79,6 +90,7 @@ export async function POST(req: Request) {
     body: info.body,
     tag: "blinko-offer",
     url: `/b/${info.slug}`,
+    cid: info.campaign_id,
   });
 
   let sent = 0;

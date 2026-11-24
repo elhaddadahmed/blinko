@@ -36,3 +36,10 @@ Ohne diese Variablen bleibt die Funktion unsichtbar. Auf dem iPhone nur als Web-
   pro Gerät höchstens alle 3 Tage. Datenbank: `0007_campaigns_nearby.sql`, Versand: `/api/push/campaign` (benötigt die VAPID-Schlüssel).
 - Nähe-Hinweis (Beta): Der Abgleich mit dem Standort passiert nur auf dem Gerät der Kundin oder des Kunden und nur, solange die Karte offen ist.
   Der Standort wird nie gespeichert. Im Hintergrund ist das mit einer Website nicht zuverlässig möglich.
+
+## Geplante Angebote (Zeitdienst)
+Geplante Angebote verschickt `/api/cron/dispatch`. Ein Zeitdienst (zum Beispiel cron-job.org, kostenlos) ruft die Adresse alle 5 Minuten auf,
+mit dem Header `Authorization: Bearer <CRON_SECRET>`. `CRON_SECRET` ist mindestens 24 Zeichen lang und steht bei Vercel (Secret).
+In der Datenbank steht nur der Hash: `insert into public.loyalty_settings (key, value) values ('cron_secret_hash', '<sha256 des Kennworts>')
+on conflict (key) do update set value = excluded.value;`. Den Hash erzeugt `printf '%s' "KENNWORT" | shasum -a 256`.
+Hinweis: Vercel Hobby erlaubt eigene Zeitpläne nur einmal täglich, deshalb der externe Zeitdienst.
